@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Raghadé Luxury Store — Checkout</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}
+  body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#0d0d0d;color:#f1f1f1}
+  a{color:inherit}
+
+  /* ====== NAVBAR ====== */
+  nav{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:#1a1a1a;box-shadow:0 2px 10px rgba(255,61,97,0.18);position:sticky;top:0;z-index:120;flex-wrap:wrap}
+  nav .left{display:flex;align-items:center;gap:18px}
+  nav img{height:50px;mix-blend-mode: lighten}
+  nav ul{list-style:none;display:flex;gap:15px;align-items:center;flex-wrap:wrap;justify-content:center}
+  nav ul li a{color:#fff;text-decoration:none;font-size:14px;transition:0.3s}
+  nav ul li a:hover{color:#ff6b81}
+  nav .all-products-btn{background:linear-gradient(90deg,#ff6b81,#ff3d61);color:#fff;border:none;padding:8px 20px;border-radius:25px;cursor:pointer;font-size:14px;transition:0.3s;text-decoration:none}
+  nav .all-products-btn:hover{transform:scale(1.05);box-shadow:0 0 15px #ff3d61,0 0 25px #ff6b81}
+
+  /* cart icon */
+  .nav-right{display:flex;align-items:center;gap:12px}
+  .cart-icon{position:relative;color:#fff;font-size:22px;margin-right:8px;text-decoration:none;display:flex;align-items:center;gap:8px}
+  .cart-icon:hover{color:#ff6b81}
+  #cart-count{position:absolute;top:-6px;right:-10px;background:#ff3d61;color:#fff;font-size:12px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:700;border:2px solid #1a1a1a}
+
+  /* ====== HERO ====== */
+  .hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;height:clamp(280px,48vh,420px);background:url('images2/task3-1.jpg') center/cover no-repeat;position:relative}
+  .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.6),rgba(0,0,0,0.65))}
+  .hero-content{position:relative;z-index:1;padding:30px}
+  .hero h1{font-size:clamp(26px,5vw,48px);margin-bottom:10px;color:#ff6b81}
+  .hero p{font-size:clamp(14px,2.8vw,18px);margin-bottom:12px;color:#ffa3b1}
+
+  /* ====== PRODUCTS GRID ====== */
+  .container{max-width:1200px;margin:0 auto;padding:30px 18px 80px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;align-items:start}
+  .card{width:100%;background:linear-gradient(145deg,#161616,#262626);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(255,61,97,0.12);text-align:center;border:1px solid #222;transition:transform .35s,box-shadow .35s}
+  .card:hover{transform:translateY(-8px);box-shadow:0 24px 60px rgba(255,61,97,0.18)}
+  .image-container{width:100%;height:220px;overflow:hidden;border-bottom:1px solid #262626}
+  .image-container img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s,filter .5s}
+  .card:hover .image-container img{transform:scale(1.06);filter:brightness(1.05)}
+  .card-body{padding:14px}
+  .brand-name{font-size:15px;font-weight:700;color:#ff6b81;margin-bottom:4px}
+  .brand-desc{font-size:12px;color:#f0aeb7;margin-bottom:8px;font-style:italic}
+  .product-name{font-size:15px;color:#fff;margin-bottom:6px;font-weight:700}
+  .rating{color:#ffb400;font-size:14px;margin-bottom:8px}
+  .price{margin-bottom:12px}
+  .old-price{text-decoration:line-through;color:#888;font-weight:700;margin-right:6px;font-size:13px}
+  .new-price{color:#ff3d61;font-weight:800;font-size:17px}
+  .price span::after{content:" SAR";font-weight:400;margin-left:3px;font-size:12px}
+  .buy-btn{background:linear-gradient(90deg,#ff6b81,#ff3d61);color:#fff;border:none;padding:9px 18px;border-radius:30px;font-size:14px;cursor:pointer;transition:transform .25s,box-shadow .25s;box-shadow:0 0 10px rgba(255,61,97,0.12);display:inline-flex;align-items:center;gap:8px}
+  .buy-btn:hover{transform:scale(1.03);box-shadow:0 0 20px rgba(255,61,97,0.18)}
+
+  /* ====== CART SIDEBAR ====== */
+  .cart-sidebar{position:fixed;top:0;right:-420px;width:420px;height:100vh;background:#0f0f10;box-shadow:-20px 0 60px rgba(0,0,0,0.6);transition:right .35s;z-index:200;padding:22px;overflow-y:auto;border-left:1px solid #222}
+  .cart-sidebar.open{right:0}
+  .cart-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+  .cart-header h2{color:#ff6b81;font-size:20px}
+  .close-cart{background:transparent;border:none;color:#fff;font-size:20px;cursor:pointer}
+  .cart-items{display:flex;flex-direction:column;gap:12px}
+  .cart-item{display:flex;gap:12px;align-items:center;background:linear-gradient(180deg,#121212,#1a1a1a);padding:10px;border-radius:12px;border:1px solid #222}
+  .cart-item img{width:64px;height:64px;border-radius:10px;object-fit:cover}
+  .cart-item-info{flex:1;display:flex;flex-direction:column;gap:6px}
+  .cart-item-info h4{font-size:14px;color:#ffd6df;margin:0}
+  .cart-item-info .meta{font-size:13px;color:#ffb6c1;font-weight:700}
+  .qty-controls{display:flex;align-items:center;gap:8px}
+  .qty-controls button{background:#222;border:none;color:#fff;padding:6px 9px;border-radius:8px;cursor:pointer}
+  .remove-btn{background:transparent;border:1px solid #3a3a3a;color:#ff6b81;padding:6px 8px;border-radius:8px;cursor:pointer}
+  .cart-summary{margin-top:18px;background:linear-gradient(180deg,#0f0f0f,#161616);padding:12px;border-radius:10px;border:1px solid #222}
+  .summary-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:700;color:#fff}
+  .checkout-btn{display:block;width:100%;text-align:center;padding:12px;border-radius:12px;background:linear-gradient(90deg,#ff6b81,#ff3d61);color:#fff;text-decoration:none;font-weight:700;margin-top:10px}
+
+  /* Checkout form / flow */
+  .checkout-flow{display:none;margin-top:12px;background:linear-gradient(180deg,#0f0f0f,#131313);padding:12px;border-radius:12px;border:1px solid #222}
+  .checkout-flow.active{display:block}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .form-field{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+  label{font-size:13px;color:#ffb6c1;font-weight:700}
+  input[type=text],input[type=email],input[type=tel],select,textarea{background:#0b0b0b;border:1px solid #222;padding:10px;border-radius:8px;color:#fff;font-size:14px}
+  textarea{min-height:72px}
+  .order-summary-box{margin-top:12px;background:linear-gradient(180deg,#161616,#1a1a1a);padding:12px;border-radius:10px;border:1px solid #222}
+  .summary-item{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+  .summary-item img{width:44px;height:44px;border-radius:8px;object-fit:cover}
+  .confirm-order-btn{display:block;width:100%;text-align:center;padding:12px;border-radius:12px;background:linear-gradient(90deg,#ff6b81,#ff3d61);color:#fff;text-decoration:none;font-weight:800;margin-top:8px;border:none;cursor:pointer}
+
+  /* order confirmation modal */
+  .order-confirmation{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+  .order-confirmation.active{display:flex}
+  .confirm-card{width:100%;max-width:720px;background:linear-gradient(180deg,#0f0f10,#161616);border-radius:16px;padding:22px;border:1px solid #222;color:#fff;box-shadow:0 30px 80px rgba(0,0,0,0.7)}
+  .confirm-top{display:flex;gap:16px;align-items:center}
+  .confirm-top .icon{width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,#ff6b81,#ff3d61);font-size:34px;color:#fff;font-weight:900}
+  .order-meta{flex:1}
+  .order-meta h3{color:#ffd6df;margin-bottom:6px}
+  .order-meta p{color:#ddd;margin-bottom:4px}
+  .confirm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  .receipt-list{display:flex;flex-direction:column;gap:10px}
+  .receipt-item{display:flex;gap:12px;align-items:center}
+  .receipt-item img{width:64px;height:64px;border-radius:10px;object-fit:cover}
+  .receipt-totals{margin-top:12px;padding-top:12px;border-top:1px dashed #2b2b2b}
+  .small-muted{color:#bdbdbd;font-size:13px}
+
+  /* small screen adjustments */
+  @media (max-width:480px){
+    .cart-sidebar{width:100%;right:-100%}
+    .cart-sidebar.open{right:0}
+    .image-container{height:180px}
+    .card{border-radius:14px}
+    nav img{height:44px}
+    .form-grid{grid-template-columns:1fr}
+    .confirm-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="left">
+    <!-- logo بدون خلفية كما عندك -->
+    <a href="#hero"><img src="images2/Ligo.jpg" alt="Raghde Logo"></a>
+    <ul>
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+
+  <div class="nav-right">
+    <!-- أيقونة السلة تعرض عدد العناصر -->
+    <a href="javascript:void(0)" class="cart-icon" id="open-cart">
+      <i class="fas fa-shopping-cart"></i>
+      <span id="cart-count">0</span>
+    </a>
+    <a class="all-products-btn" href="#products">All Products</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero" class="hero">
+  <div class="hero-content">
+    <h1>Raghadé Luxury Store</h1>
+    <p>Luxury Makeup for the Elegant You — تجربة تسوّق حقيقية وفاخرة</p>
+  </div>
+</section>
+
+<!-- PRODUCTS GRID -->
+<div id="products" class="container">
+  <div class="card" data-brand="KIKO">
+    <div class="image-container"><img src="images2/task3-1.jpg" alt="KIKO - Red Velvet"></div>
+    <div class="card-body">
+      <div class="brand-name">KIKO</div>
+      <div class="brand-desc">Glossy Lipstick · Timeless Luxury</div>
+      <div class="rating">⭐⭐⭐⭐☆</div>
+      <div class="product-name">Red Velvet</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 2 -->
+  <div class="card" data-brand="KIKO">
+    <div class="image-container"><img src="images2/task3-2.jpg" alt="KIKO - Rose Pink"></div>
+    <div class="card-body">
+      <div class="brand-name">KIKO</div>
+      <div class="brand-desc">Glossy Lipstick · Smooth & Shiny</div>
+      <div class="rating">⭐⭐⭐⭐⭐</div>
+      <div class="product-name">Rose Pink</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 3 -->
+  <div class="card" data-brand="KIKO">
+    <div class="image-container"><img src="images2/task3-3.jpg" alt="KIKO - Coral Shine"></div>
+    <div class="card-body">
+      <div class="brand-name">KIKO</div>
+      <div class="brand-desc">Glossy Lipstick · Elegant & Attractive</div>
+      <div class="rating">⭐⭐⭐⭐⭐</div>
+      <div class="product-name">Coral Shine</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 4 -->
+  <div class="card" data-brand="KIKO">
+    <div class="image-container"><img src="images2/task3-4.jpg" alt="KIKO - Peach Glow"></div>
+    <div class="card-body">
+      <div class="brand-name">KIKO</div>
+      <div class="brand-desc">Glossy Lipstick · Sparkling Glow</div>
+      <div class="rating">⭐⭐⭐⭐☆</div>
+      <div class="product-name">Peach Glow</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 5 -->
+  <div class="card" data-brand="KIKO">
+    <div class="image-container"><img src="images2/task3-5.jpg" alt="KIKO - Nude Beige"></div>
+    <div class="card-body">
+      <div class="brand-name">KIKO</div>
+      <div class="brand-desc">Glossy Lipstick · Soft & Luxurious</div>
+      <div class="rating">⭐⭐⭐⭐⭐</div>
+      <div class="product-name">Nude Beige</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 6 -->
+  <div class="card" data-brand="KIKO">
+    <div class="image-container"><img src="images2/task3-6.jpg" alt="KIKO - Pink Blossom"></div>
+    <div class="card-body">
+      <div class="brand-name">KIKO</div>
+      <div class="brand-desc">Glossy Lipstick · Vibrant Color</div>
+      <div class="rating">⭐⭐⭐⭐⭐</div>
+      <div class="product-name">Pink Blossom</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 7 -->
+  <div class="card" data-brand="Luxora">
+    <div class="image-container"><img src="images2/task3-7.jpg" alt="Luxora - Cherry Red"></div>
+    <div class="card-body">
+      <div class="brand-name">Luxora</div>
+      <div class="brand-desc">Glossy Lipstick · Deep & Seductive</div>
+      <div class="rating">⭐⭐⭐⭐⭐</div>
+      <div class="product-name">Cherry Red</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 8 -->
+  <div class="card" data-brand="Luxora">
+    <div class="image-container"><img src="images2/task3-8.jpg" alt="Luxora - Peach Pink"></div>
+    <div class="card-body">
+      <div class="brand-name">Luxora</div>
+      <div class="brand-desc">Glossy Lipstick · Irresistible Shine</div>
+      <div class="rating">⭐⭐⭐⭐☆</div>
+      <div class="product-name">Peach Pink</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 9 -->
+  <div class="card" data-brand="Luxora">
+    <div class="image-container"><img src="images2/task3-9.jpg" alt="Luxora - Coral Blossom"></div>
+    <div class="card-body">
+      <div class="brand-name">Luxora</div>
+      <div class="brand-desc">Glossy Lipstick · Natural & Luxurious</div>
+      <div class="rating">⭐⭐⭐⭐⭐</div>
+      <div class="product-name">Coral Blossom</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 10 -->
+  <div class="card" data-brand="Luxora">
+    <div class="image-container"><img src="images2/task3-10.jpg" alt="Luxora - Mauve Magic"></div>
+    <div class="card-body">
+      <div class="brand-name">Luxora</div>
+      <div class="brand-desc">Glossy Lipstick · Feminine & Elegant</div>
+      <div class="rating">⭐⭐⭐⭐⭐</div>
+      <div class="product-name">Mauve Magic</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 11 -->
+  <div class="card" data-brand="Luxora">
+    <div class="image-container"><img src="images2/task3-11.jpg" alt="Luxora - Berry Bliss"></div>
+    <div class="card-body">
+      <div class="brand-name">Luxora</div>
+      <div class="brand-desc">Glossy Lipstick · Royal Shine</div>
+      <div class="rating">⭐⭐⭐⭐⭐</div>
+      <div class="product-name">Berry Bliss</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 12 -->
+  <div class="card" data-brand="Bellezza">
+    <div class="image-container"><img src="images2/task3-12.jpg" alt="Bellezza - Sunset Coral"></div>
+    <div class="card-body">
+      <div class="brand-name">Bellezza</div>
+      <div class="brand-desc">Glossy Lipstick · Warm & Luxurious</div>
+      <div class="rating">⭐⭐⭐⭐☆</div>
+      <div class="product-name">Sunset Coral</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 13 -->
+  <div class="card" data-brand="Bellezza">
+    <div class="image-container"><img src="images2/task3-13.jpg" alt="Bellezza - Rose Coral"></div>
+    <div class="card-body">
+      <div class="brand-name">Bellezza</div>
+      <div class="brand-desc">Glossy Lipstick · Dreamy Look</div>
+      <div class="rating">⭐⭐⭐⭐⭐</div>
+      <div class="product-name">Rose Coral</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 14 -->
+  <div class="card" data-brand="Bellezza">
+    <div class="image-container"><img src="images2/task3-14.jpg" alt="Bellezza - Pink Glow"></div>
+    <div class="card-body">
+      <div class="brand-name">Bellezza</div>
+      <div class="brand-desc">Glossy Lipstick · Soft & Attractive</div>
+      <div class="rating">⭐⭐⭐⭐⭐</div>
+      <div class="product-name">Pink Glow</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 15 -->
+  <div class="card" data-brand="Bellezza">
+    <div class="image-container"><img src="images2/task3-15.jpg" alt="Bellezza - Peach Elegance"></div>
+    <div class="card-body">
+      <div class="brand-name">Bellezza</div>
+      <div class="brand-desc">Glossy Lipstick · Luxurious & Bright</div>
+      <div class="rating">⭐⭐⭐⭐⭐</div>
+      <div class="product-name">Peach Elegance</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 16 -->
+  <div class="card" data-brand="Bellezza">
+    <div class="image-container"><img src="images2/task3-16.jpg" alt="Bellezza - Coral Luxe"></div>
+    <div class="card-body">
+      <div class="brand-name">Bellezza</div>
+      <div class="brand-desc">Glossy Lipstick · Charming & Luxurious</div>
+      <div class="rating">⭐⭐⭐⭐⭐</div>
+      <div class="product-name">Coral Luxe</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Product 17 -->
+  <div class="card" data-brand="Bellezza">
+    <div class="image-container"><img src="images2/task3-17.jpg" alt="Bellezza - Blush Dream"></div>
+    <div class="card-body">
+      <div class="brand-name">Bellezza</div>
+      <div class="brand-desc">Glossy Lipstick · Perfect Finishing Touch</div>
+      <div class="rating">⭐⭐⭐⭐⭐</div>
+      <div class="product-name">Blush Dream</div>
+      <div class="price"><span class="old-price">188</span><span class="new-price" data-price="88">88</span></div>
+      <button class="buy-btn"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ABOUT -->
+<section id="about" style="background:#1a1a1a;padding:50px 15px;text-align:center;">
+  <h2 style="color:#ff6b81;font-size:24px;margin-bottom:15px;">About Us</h2>
+  <p style="color:#ddd;font-size:15px;max-width:700px;margin:auto;line-height:1.7;">
+    Raghadé Luxury Store is your ultimate destination for beauty and elegance.
+    We offer carefully selected makeup products that add confidence and style.
+    Quality and sophistication meet for an exceptional shopping experience.
+  </p>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="background:#0f0f0f;padding:50px 15px;text-align:center;">
+  <h2 style="color:#ff6b81;font-size:24px;margin-bottom:15px;">Contact Us</h2>
+  <p style="color:#ddd;font-size:15px;margin-bottom:20px;">We’re happy to answer your inquiries and suggestions anytime 💌</p>
+  <a href="mailto:info@raghadeluxury.com" style="display:inline-block;background:linear-gradient(90deg,#ff6b81,#ff3d61);color:#fff;padding:8px 20px;border-radius:30px;text-decoration:none;"> Email Us</a>
+</section>
+
+<!-- FOOTER -->
+<footer style="text-align:center;padding:20px 0;background:#1a1a1a;font-size:13px;color:#f1f1f1;">
+  &copy; 2025 Raghadé Luxury Store. All rights reserved.
+</footer>
+
+
+<aside class="cart-sidebar" id="cartSidebar" aria-hidden="true">
+  <div class="cart-header">
+    <h2>Your Cart</h2>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="color:#aaa;font-size:13px;">Items: <span id="cartTotalCount">0</span></div>
+      <button class="close-cart" id="closeCart" title="Close"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
+
+  <div class="cart-items" id="cartItems"></div>
+
+  <div class="cart-summary">
+    <div class="summary-row"><span>Subtotal</span><span id="cartSubtotal">0 SAR</span></div>
+    <div class="summary-row"><span>VAT (15%)</span><span id="cartVAT">0 SAR</span></div>
+    <div class="summary-row" style="font-size:18px;color:#ffd6df"><span>Total</span><span id="cartTotal">0 SAR</span></div>
+    <a href="#" class="checkout-btn" id="checkoutBtn"><i class="fas fa-credit-card"></i> Checkout</a>
+    <button style="margin-top:10px;width:100%;padding:10px;border-radius:10px;background:#2b2b2b;color:#fff;border:0;cursor:pointer;" id="clearCart">Clear Cart</button>
+  </div>
+
+  
+  <div id="checkoutFlow" class="checkout-flow" aria-hidden="true">
+    <h3 style="color:#ff6b81;margin-bottom:8px">معلومات الطلب والتوصيل</h3>
+    <div class="form-grid">
+      <div>
+        <div class="form-field">
+          <label>الاسم الأول</label>
+          <input type="text" id="firstName" placeholder="First name" required>
+        </div>
+        <div class="form-field">
+          <label>اسم العائلة</label>
+          <input type="text" id="lastName" placeholder="Last name" required>
+        </div>
+        <div class="form-field">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-field">
+          <label>رقم الهاتف</label>
+          <input type="tel" id="phone" placeholder="05xxxxxxxx" pattern="[0-9+() -]{6,}" required>
+        </div>
+      </div>
+
+      <div>
+        <div class="form-field">
+          <label>عنوان الشارع</label>
+          <input type="text" id="street" placeholder="Street address" required>
+        </div>
+        <div class="form-field">
+          <label>المدينة</label>
+          <input type="text" id="city" placeholder="City" required>
+        </div>
+
+        <div class="form-field">
+          <label>طريقة التوصيل</label>
+          <select id="shippingMethod">
+            <option value="standard">التوصيل القياسي — 3 إلى 5 أيام</option>
+            <option value="express">التوصيل السريع — 1 إلى 2 يوم</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>ملاحظات (اختياري)</label>
+          <textarea id="orderNotes" placeholder="معلومات إضافية عن التوصيل (مثلاً: بعد 5 مساءً)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- mini order summary box -->
+    <div class="order-summary-box" id="checkoutMiniSummary">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <strong>ملخص الطلب</strong>
+        <span id="miniItemsCount" class="small-muted">0 items</span>
+      </div>
+      <div id="miniItemsList"></div>
+      <div class="summary-row" style="margin-top:10px"><span>Subtotal</span><span id="miniSubtotal">0 SAR</span></div>
+      <div class="summary-row"><span>VAT (15%)</span><span id="miniVAT">0 SAR</span></div>
+      <div class="summary-row" style="font-size:16px;color:#ffd6df"><span>Total</span><span id="miniTotal">0 SAR</span></div>
+
+      <button id="confirmOrderBtn" class="confirm-order-btn"><i class="fas fa-check-circle"></i> تأكيد الطلب</button>
+    </div>
+  </div>
+
+</aside>
+
+<!-- ORDER CONFIRMATION OVERLAY -->
+<div class="order-confirmation" id="orderConfirmation">
+  <div class="confirm-card" role="dialog" aria-modal="true">
+    <div class="confirm-top">
+      <div class="icon"><i class="fas fa-check"></i></div>
+      <div class="order-meta">
+        <h3>تم استلام طلبك بنجاح!</h3>
+        <p id="confirmOrderId">Order # —</p>
+        <p id="confirmDelivery">Estimated delivery: —</p>
+      </div>
+    </div>
+
+    <div class="confirm-grid">
+      <div>
+        <h4 style="color:#ff6b81;margin-bottom:8px">معلومات العميل</h4>
+        <div id="confirmCustomer" class="small-muted"></div>
+        <h4 style="color:#ff6b81;margin-top:12px;margin-bottom:8px">معلومات التوصيل</h4>
+        <div id="confirmAddress" class="small-muted"></div>
+      </div>
+
+      <div>
+        <h4 style="color:#ff6b81;margin-bottom:8px">ملخص الطلب</h4>
+        <div id="confirmItems" class="receipt-list"></div>
+        <div class="receipt-totals">
+          <div style="display:flex;justify-content:space-between;align-items:center"><strong>Subtotal</strong><span id="confirmSubtotal">0 SAR</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><strong>VAT (15%)</strong><span id="confirmVAT">0 SAR</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:18px;color:#ffd6df;margin-top:6px"><strong>Total</strong><span id="confirmTotal">0 SAR</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px">
+      <button id="printReceiptBtn" style="padding:10px 14px;border-radius:8px;background:#222;border:0;color:#fff;cursor:pointer">طباعة الإيصال</button>
+      <button id="closeConfirmBtn" style="padding:10px 14px;border-radius:8px;background:linear-gradient(90deg,#ff6b81,#ff3d61);border:0;color:#fff;cursor:pointer">تم — العودة للتسوق</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+
+
+let cart = JSON.parse(localStorage.getItem('raghade_cart')) || [];
+let orders = JSON.parse(localStorage.getItem('raghade_orders')) || [];
+
+
+function formatCurrency(n){ return Number(n).toFixed(2); }
+
+
+const cartCountEl = document.getElementById('cart-count');
+const openCartBtn = document.getElementById('open-cart');
+const cartSidebar = document.getElementById('cartSidebar');
+const closeCartBtn = document.getElementById('closeCart');
+const cartItemsEl = document.getElementById('cartItems');
+const cartSubtotalEl = document.getElementById('cartSubtotal');
+const cartVATEl = document.getElementById('cartVAT');
+const cartTotalEl = document.getElementById('cartTotal');
+const cartTotalCountEl = document.getElementById('cartTotalCount');
+const clearCartBtn = document.getElementById('clearCart');
+const checkoutBtn = document.getElementById('checkoutBtn');
+
+
+const checkoutFlow = document.getElementById('checkoutFlow');
+const miniItemsList = document.getElementById('miniItemsList');
+const miniItemsCount = document.getElementById('miniItemsCount');
+const miniSubtotalEl = document.getElementById('miniSubtotal');
+const miniVATEl = document.getElementById('miniVAT');
+const miniTotalEl = document.getElementById('miniTotal');
+const confirmOrderBtn = document.getElementById('confirmOrderBtn');
+
+
+const orderConfirmation = document.getElementById('orderConfirmation');
+const confirmOrderIdEl = document.getElementById('confirmOrderId');
+const confirmDeliveryEl = document.getElementById('confirmDelivery');
+const confirmCustomerEl = document.getElementById('confirmCustomer');
+const confirmAddressEl = document.getElementById('confirmAddress');
+const confirmItemsEl = document.getElementById('confirmItems');
+const confirmSubtotalEl = document.getElementById('confirmSubtotal');
+const confirmVATEl = document.getElementById('confirmVAT');
+const confirmTotalEl = document.getElementById('confirmTotal');
+const printReceiptBtn = document.getElementById('printReceiptBtn');
+const closeConfirmBtn = document.getElementById('closeConfirmBtn');
+
+const firstNameEl = document.getElementById('firstName');
+const lastNameEl = document.getElementById('lastName');
+const emailEl = document.getElementById('email');
+const phoneEl = document.getElementById('phone');
+const streetEl = document.getElementById('street');
+const cityEl = document.getElementById('city');
+const shippingMethodEl = document.getElementById('shippingMethod');
+const orderNotesEl = document.getElementById('orderNotes');
+
+
+function updateCartUI(){
+  const totalItems = cart.reduce((s,i)=> s + (i.qty||1), 0);
+  cartCountEl.textContent = totalItems;
+  cartTotalCountEl.textContent = totalItems;
+  renderCartItems();
+  saveCart();
+}
+
+// Save cart
+function saveCart(){ localStorage.setItem('raghade_cart', JSON.stringify(cart)); }
+
+// Add product
+function addProduct(product){
+  // if product exists (same name+price+img), increase qty
+  const found = cart.find(p => p.name === product.name && p.price === product.price && p.img === product.img);
+  if(found){ found.qty = (found.qty || 1) + 1; }
+  else { product.qty = 1; cart.push(product); }
+  updateCartUI();
+  flashAddFeedback();
+}
+
+// Remove item by index
+function removeItem(index){ cart.splice(index,1); updateCartUI(); }
+
+// Change qty
+function changeQty(index, delta){ if(!cart[index]) return; cart[index].qty = (cart[index].qty || 1) + delta; if(cart[index].qty <= 0) removeItem(index); else updateCartUI(); }
+
+// Render cart items inside sidebar
+function renderCartItems(){
+  cartItemsEl.innerHTML = '';
+  if(cart.length === 0){
+    cartItemsEl.innerHTML = '<div style="color:#aaa;text-align:center;padding:30px 10px;">Your cart is empty — add beautiful items ✨</div>';
+    cartSubtotalEl.textContent = '0 SAR';
+    cartVATEl.textContent = '0 SAR';
+    cartTotalEl.textContent = '0 SAR';
+    return;
+  }
+
+  let subtotal = 0;
+  cart.forEach((item, idx) => {
+    const priceNum = Number(item.price);
+    const qty = item.qty || 1;
+    subtotal += priceNum * qty;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'cart-item';
+    wrapper.innerHTML = `
+      <img src="${item.img}" alt="${item.name}">
+      <div class="cart-item-info">
+        <h4>${item.name}</h4>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+          <div class="meta">${formatCurrency(priceNum)} SAR x ${qty}</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="qty-controls">
+              <button data-action="dec" data-index="${idx}">-</button>
+              <span style="display:inline-block;min-width:26px;text-align:center;color:#ffd6df;font-weight:700">${qty}</span>
+              <button data-action="inc" data-index="${idx}">+</button>
+            </div>
+            <button class="remove-btn" data-action="remove" data-index="${idx}">Remove</button>
+          </div>
+        </div>
+      </div>
+    `;
+    cartItemsEl.appendChild(wrapper);
+  });
+
+  const vat = subtotal * 0.15; // example VAT
+  const total = subtotal + vat;
+  cartSubtotalEl.textContent = formatCurrency(subtotal) + ' SAR';
+  cartVATEl.textContent = formatCurrency(vat) + ' SAR';
+  cartTotalEl.textContent = formatCurrency(total) + ' SAR';
+}
+
+// Attach add-to-cart event to all buttons
+document.querySelectorAll('.buy-btn').forEach(btn => {
+  btn.addEventListener('click', function(e){
+    const card = e.currentTarget.closest('.card');
+    const name = card.querySelector('.product-name').textContent.trim();
+    const price = card.querySelector('.new-price').getAttribute('data-price') || card.querySelector('.new-price').textContent.trim();
+    const img = card.querySelector('img').getAttribute('src');
+
+    addProduct({name, price: Number(price), img});
+    // button feedback
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check"></i> Added';
+    btn.style.transform = 'scale(.98)';
+    setTimeout(()=>{ btn.innerHTML = originalHTML; btn.style.transform=''; }, 900);
+  });
+});
+
+// Open/close cart
+openCartBtn.addEventListener('click', ()=>{ cartSidebar.classList.add('open'); cartSidebar.setAttribute('aria-hidden','false'); });
+closeCartBtn.addEventListener('click', ()=>{ cartSidebar.classList.remove('open'); cartSidebar.setAttribute('aria-hidden','true'); });
+
+// Delegate clicks inside cart sidebar (inc/dec/remove)
+cartItemsEl.addEventListener('click', function(e){
+  const action = e.target.getAttribute('data-action');
+  const index = Number(e.target.getAttribute('data-index'));
+  if(!action) return;
+  if(action === 'remove'){ removeItem(index); }
+  if(action === 'inc'){ changeQty(index, +1); }
+  if(action === 'dec'){ changeQty(index, -1); }
+});
+
+// Clear cart
+clearCartBtn.addEventListener('click', ()=>{
+  if(!confirm('Are you sure you want to clear the cart?')) return;
+  cart = [];
+  updateCartUI();
+});
+
+
+checkoutBtn.addEventListener('click', function(e){
+  e.preventDefault();
+  if(cart.length === 0){ alert('سلة التسوق فارغة — أضف منتجات أولاً.'); return; }
+  openCheckout();
+});
+
+
+document.addEventListener('click', function(e){
+  if(!cartSidebar.classList.contains('open')) return;
+  const target = e.target;
+  if(!cartSidebar.contains(target) && !openCartBtn.contains(target)){
+    cartSidebar.classList.remove('open');
+  }
+});
+
+
+function flashAddFeedback(){
+  const el = document.createElement('div');
+  el.style.position='fixed'; el.style.top='18px'; el.style.right='18px';
+  el.style.background='linear-gradient(90deg,#ff6b81,#ff3d61)'; el.style.color='#fff';
+  el.style.padding='9px 14px'; el.style.borderRadius='10px'; el.style.boxShadow='0 10px 30px rgba(255,61,97,0.18)';
+  el.style.zIndex=9999; el.textContent='Added to cart ✓';
+  document.body.appendChild(el);
+  setTimeout(()=>el.style.transform='translateY(-8px)',10);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(-18px)'; },900);
+  setTimeout(()=>el.remove(),1400);
+}
+
+
+updateCartUI();
+renderCartItems();
+
+// ---------------- CHECKOUT FLOW FUNCTIONS ----------------
+function openCheckout(){
+  // show checkout area and populate mini summary
+  checkoutFlow.classList.add('active');
+  checkoutFlow.setAttribute('aria-hidden','false');
+  populateMiniSummary();
+  // scroll sidebar to bottom so user sees form
+  setTimeout(()=>{ cartSidebar.scrollTop = cartSidebar.scrollHeight; },200);
+}
+
+function populateMiniSummary(){
+  miniItemsList.innerHTML = '';
+  let subtotal = 0;
+  cart.forEach(item =>{
+    const itemRow = document.createElement('div');
+    itemRow.className = 'summary-item';
+    itemRow.innerHTML = `<img src="${item.img}" alt="${item.name}"><div style="flex:1"><div style="font-weight:700;color:#ffd6df">${item.name}</div><div class="small-muted">${formatCurrency(item.price)} SAR x ${item.qty||1}</div></div>`;
+    miniItemsList.appendChild(itemRow);
+    subtotal += Number(item.price) * (item.qty||1);
+  });
+  const vat = subtotal * 0.15;
+  const total = subtotal + vat;
+  miniItemsCount.textContent = cart.reduce((s,i)=> s + (i.qty||1), 0) + ' items';
+  miniSubtotalEl.textContent = formatCurrency(subtotal) + ' SAR';
+  miniVATEl.textContent = formatCurrency(vat) + ' SAR';
+  miniTotalEl.textContent = formatCurrency(total) + ' SAR';
+}
+
+// Validate form quickly using HTML5 validity
+function isCheckoutFormValid(){
+  const elements = [firstNameEl, lastNameEl, emailEl, phoneEl, streetEl, cityEl];
+  for(const el of elements){ if(!el.checkValidity()) { el.focus(); return false; } }
+  return true;
+}
+
+// Generate order id
+function generateOrderId(){
+  const time = Date.now().toString().slice(-6);
+  const rnd = Math.floor(100 + Math.random() * 900);
+  return 'RAGH-' + time + '-' + rnd;
+}
+
+
+function formatDate(d){
+  const opts = { day:'numeric', month:'short', year:'numeric' };
+  return d.toLocaleDateString('en-GB', opts);
+}
+
+// Confirm order handler
+confirmOrderBtn.addEventListener('click', function(){
+  if(!isCheckoutFormValid()){
+    alert('يرجى ملء جميع الحقول المطلوبة بشكل صحيح.');
+    return;
+  }
+
+  // prepare order data
+  const order = {};
+  order.id = generateOrderId();
+  order.customer = {
+    firstName: firstNameEl.value.trim(),
+    lastName: lastNameEl.value.trim(),
+    email: emailEl.value.trim(),
+    phone: phoneEl.value.trim()
+  };
+  order.delivery = {
+    street: streetEl.value.trim(),
+    city: cityEl.value.trim(),
+    method: shippingMethodEl.value,
+    notes: orderNotesEl.value.trim()
+  };
+  order.items = cart.map(i => ({ name:i.name, price:Number(i.price), qty:i.qty||1, img:i.img }));
+
+  // totals
+  const subtotal = order.items.reduce((s,it)=> s + it.price * it.qty, 0);
+  const vat = subtotal * 0.15;
+  const total = subtotal + vat;
+  order.totals = { subtotal: Number(formatCurrency(subtotal)), vat: Number(formatCurrency(vat)), total: Number(formatCurrency(total)) };
+
+  // estimated delivery window
+  let minDays, maxDays;
+  if(order.delivery.method === 'express'){ minDays = 1; maxDays = 2; }
+  else { minDays = 3; maxDays = 5; }
+  const now = new Date();
+  const earliest = new Date(now.getTime() + (minDays * 24 * 60 * 60 * 1000));
+  const latest = new Date(now.getTime() + (maxDays * 24 * 60 * 60 * 1000));
+  order.estimated = { from: earliest.toISOString(), to: latest.toISOString(), text: `${formatDate(earliest)} — ${formatDate(latest)}` };
+
+  // save order
+  orders.push(order);
+  localStorage.setItem('raghade_orders', JSON.stringify(orders));
+
+  // show confirmation overlay with details
+  showOrderConfirmation(order);
+
+  // clear cart and UI
+  cart = [];
+  updateCartUI();
+  checkoutFlow.classList.remove('active');
+});
+
+// Show order confirmation UI
+function showOrderConfirmation(order){
+  confirmOrderIdEl.textContent = 'Order ID: ' + order.id;
+  confirmDeliveryEl.textContent = 'Estimated delivery: ' + order.estimated.text;
+  confirmCustomerEl.innerHTML = `
+    <strong>${order.customer.firstName} ${order.customer.lastName}</strong><br>
+    <span class="small-muted">${order.customer.email}</span><br>
+    <span class="small-muted">${order.customer.phone}</span>
+  `;
+  confirmAddressEl.innerHTML = `
+    <strong>${order.delivery.street}</strong><br>
+    <span class="small-muted">${order.delivery.city}</span><br>
+    <span class="small-muted">Method: ${order.delivery.method === 'express' ? 'Express' : 'Standard'}</span>
+  `;
+
+  confirmItemsEl.innerHTML = '';
+  order.items.forEach(it =>{
+    const r = document.createElement('div');
+    r.className = 'receipt-item';
+    r.innerHTML = `<img src="${it.img}" alt="${it.name}"><div style="flex:1"><div style="font-weight:700;color:#ffd6df">${it.name}</div><div class="small-muted">${formatCurrency(it.price)} SAR x ${it.qty}</div></div>`;
+    confirmItemsEl.appendChild(r);
+  });
+  confirmSubtotalEl.textContent = formatCurrency(order.totals.subtotal) + ' SAR';
+  confirmVATEl.textContent = formatCurrency(order.totals.vat) + ' SAR';
+  confirmTotalEl.textContent = formatCurrency(order.totals.total) + ' SAR';
+
+  orderConfirmation.classList.add('active');
+}
+
+// Print receipt: open a printable window
+printReceiptBtn.addEventListener('click', function(){
+  const el = document.querySelector('.confirm-card');
+  // build a simple printable HTML
+  const printWindow = window.open('', '_blank', 'width=800,height=900');
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Receipt</title><style>body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#111;padding:20px}h1{color:#b3002d}img{max-width:80px}</style></head><body>` + el.innerHTML + `</body></html>`;
+  printWindow.document.write(html);
+  printWindow.document.close();
+  setTimeout(()=>{ printWindow.focus(); printWindow.print(); },300);
+});
+
+// Close confirmation
+closeConfirmBtn.addEventListener('click', function(){ orderConfirmation.classList.remove('active'); });
+
+// Initialize: if orders in storage, keep them (for demo)
+// Expose a debug helper to view orders in console: window._orders = orders
+window._orders = orders;
+
+</script>
+
+</body>
+</html>
