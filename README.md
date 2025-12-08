@@ -36,8 +36,7 @@ The project simulates a full online shopping experience — from browsing produc
 - JavaScript (ES6)  
 
 ---
-
-## 💡 Purpose  
-This project was developed to apply front-end development concepts, build  logic, and enhance design and interactivity skills.  
+Google Drive:  
+[Open the resources folder on Google Drive](https://drive.google.com/drive/folders/1mfn5JbI7mZ2xtlVygHKCb7K8JOmk_xAe?usp=drive_link)
 
 Raghad Alshawafy
