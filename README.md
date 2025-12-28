@@ -1,5 +1,7 @@
 # Raghadé Luxury Store  
 
+![108402c6-b880-4099-b509-00bb1eda09cd](https://github.com/user-attachments/assets/eb052308-be63-4550-9cd3-3c2fde9cd4e2)
+
 An interactive and modern  built as part of the Web Development Bootcamp journey.  
 The project simulates a full online shopping experience — from browsing products to completing an order and printing a receipt.  
 
